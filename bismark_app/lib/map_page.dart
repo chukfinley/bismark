@@ -60,10 +60,20 @@ class _MapPageState extends State<MapPage> {
         return const Color(0xFFCC0000);
       case 'EDEKA':
         return const Color(0xFF005CA9);
-      case 'ALDI':
-        return const Color(0xFF00457C);
+      case 'KAUFLAND':
+        return const Color(0xFFE10915);
+      case 'FAMILA':
+        return const Color(0xFF008C3A);
+      case 'MARKANT':
+        return const Color(0xFFEE7203);
+      case 'CITTI':
+        return const Color(0xFF6A1B9A);
+      case 'NAHKAUF':
+        return const Color(0xFFB71C1C);
+      case 'GETRAENKE_HOFFMANN':
+        return const Color(0xFF1565C0);
       default:
-        return Colors.grey;
+        return Colors.blueGrey;
     }
   }
 
@@ -142,6 +152,8 @@ class _MapPageState extends State<MapPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(m.name, style: Theme.of(context).textTheme.titleLarge),
+            Text(m.retailerLabel,
+                style: TextStyle(color: _color(m), fontWeight: FontWeight.w600)),
             Text(m.address),
             const SizedBox(height: 12),
             if (o != null && o.available && o.total != null)
@@ -153,7 +165,7 @@ class _MapPageState extends State<MapPage> {
             else
               Text(m.retailer == 'REWE'
                   ? 'Nicht im Sortiment dieses Marktes'
-                  : 'Preis für ${m.retailer} noch nicht verfügbar'),
+                  : 'Führt das Wasser · Angebotspreis folgt'),
           ],
         ),
       ),

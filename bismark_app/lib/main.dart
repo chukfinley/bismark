@@ -99,8 +99,23 @@ class _HomePageState extends State<HomePage> {
                   ...reduced.map((o) => _OfferTile(o)),
                   const SizedBox(height: 8),
                 ],
-                const _SectionTitle('Alle Märkte'),
+                const _SectionTitle('REWE-Märkte (Live-Preis)'),
                 ...have.map((o) => _OfferTile(o)),
+                const SizedBox(height: 12),
+                Center(
+                  child: TextButton.icon(
+                    icon: const Icon(Icons.map_outlined),
+                    label: Text(
+                        '${offers.length} Läden gesamt auf der Karte '
+                        '(Edeka, Kaufland, famila … – Angebote folgen)'),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) =>
+                              MapPage(future: Future.value(offers))),
+                    ),
+                  ),
+                ),
               ],
             );
           },

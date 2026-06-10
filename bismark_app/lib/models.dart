@@ -16,6 +16,20 @@ class Market {
     required this.lat,
     required this.lon,
   });
+
+  /// Lesbarer Kettenname (retailer ist ein Code wie GETRAENKE_HOFFMANN).
+  String get retailerLabel {
+    switch (retailer) {
+      case 'GETRAENKE_HOFFMANN':
+        return 'Getränke Hoffmann';
+      case 'FRISCHEMARKT':
+        return 'Frischemarkt';
+      case 'SONSTIGE':
+        return 'Sonstige';
+      default:
+        return retailer[0] + retailer.substring(1).toLowerCase();
+    }
+  }
 }
 
 /// Ein Preis-Angebot fuer das Produkt in einem Markt.
