@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'models.dart';
 import 'markets.dart';
@@ -53,6 +54,21 @@ class _MapPageState extends State<MapPage> {
 
   void _snack(String m) => ScaffoldMessenger.of(context)
       .showSnackBar(SnackBar(content: Text(m)));
+
+  Future<void> _openMaps(Market m) async {
+    final q = (m.lat != null && m.lon != null)
+        ? '${m.lat},${m.lon}'
+        : Uri.encodeComponent('${m.name}, ${m.address}');
+    // geo: oeffnet die Standard-Karten-App (Android), Fallback Google Maps Web.
+    final geo = Uri.parse('geo:0,0?q=$q(${Uri.encodeComponent(m.name)})');
+    final web = Uri.parse(
+        'https://www.google.com/maps/search/?api=1&query=$q');
+    if (await canLaunchUrl(geo)) {
+      await launchUrl(geo, mode: LaunchMode.externalApplication);
+    } else {
+      await launchUrl(web, mode: LaunchMode.externalApplication);
+    }
+  }
 
   Color _color(Market m) {
     switch (m.retailer) {
@@ -156,9 +172,10 @@ class _MapPageState extends State<MapPage> {
                 style: TextStyle(color: _color(m), fontWeight: FontWeight.w600)),
             Text(m.address),
             const SizedBox(height: 12),
-            if (o != null && o.available && o.total != null)
-              Text('${o.total!.toStringAsFixed(2)} €'
-                  '${o.reduced ? '  🔻 reduziert (statt ${(o.regular! + o.pfand!).toStringAsFixed(2)} €)' : ''}',
+            if (o != null && o.available && o.price != null)
+              Text('${o.price!.toStringAsFixed(2)} €'
+                  '${o.reduced ? '  🔻 statt ${o.regular!.toStringAsFixed(2)} €' : ''}'
+                  '   (+${o.pfand!.toStringAsFixed(2)} € Pfand)',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: o.reduced ? Theme.of(context).colorScheme.error : null))
@@ -166,6 +183,15 @@ class _MapPageState extends State<MapPage> {
               Text(m.retailer == 'REWE'
                   ? 'Nicht im Sortiment dieses Marktes'
                   : 'Führt das Wasser · Angebotspreis folgt'),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                icon: const Icon(Icons.directions),
+                label: const Text('Route / in Karten-App öffnen'),
+                onPressed: () => _openMaps(m),
+              ),
+            ),
           ],
         ),
       ),

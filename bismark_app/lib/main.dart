@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
             final have = offers
                 .where((o) => o.available && o.total != null)
                 .toList()
-              ..sort((a, b) => a.total!.compareTo(b.total!));
+              ..sort((a, b) => a.price!.compareTo(b.price!));
             final reduced = have.where((o) => o.reduced).toList();
 
             if (have.isEmpty) {
@@ -151,20 +151,24 @@ class _HeroCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text('${best.total!.toStringAsFixed(2)} €',
+                Text('${best.price!.toStringAsFixed(2)} €',
                     style: Theme.of(context)
                         .textTheme
                         .displaySmall
                         ?.copyWith(fontWeight: FontWeight.bold)),
                 const SizedBox(width: 10),
-                Text('inkl. ${best.pfand!.toStringAsFixed(2)} € Pfand',
-                    style: Theme.of(context).textTheme.bodyMedium),
+                if (best.reduced)
+                  Text('statt ${best.regular!.toStringAsFixed(2)} €',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          decoration: TextDecoration.lineThrough,
+                          color: cs.error)),
               ],
             ),
+            Text('+ ${best.pfand!.toStringAsFixed(2)} € Pfand (zurück) · '
+                'mit Pfand ${best.total!.toStringAsFixed(2)} €',
+                style: Theme.of(context).textTheme.bodySmall),
             if (best.reduced)
-              Text('Ware ${best.price!.toStringAsFixed(2)} € statt '
-                  '${best.regular!.toStringAsFixed(2)} €  '
-                  '(−${best.saving!.toStringAsFixed(2)} €)',
+              Text('Du sparst ${best.saving!.toStringAsFixed(2)} €',
                   style: TextStyle(
                       color: cs.error, fontWeight: FontWeight.w600)),
             const SizedBox(height: 10),
@@ -219,15 +223,17 @@ class _OfferTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text('${o.total!.toStringAsFixed(2)} €',
+            Text('${o.price!.toStringAsFixed(2)} €',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 17,
                     color: o.reduced ? cs.error : null)),
             if (o.reduced)
-              Text('statt ${(o.regular! + o.pfand!).toStringAsFixed(2)} €',
+              Text('statt ${o.regular!.toStringAsFixed(2)} €',
                   style: const TextStyle(
                       fontSize: 11, decoration: TextDecoration.lineThrough)),
+            Text('+${o.pfand!.toStringAsFixed(2)} € Pfand',
+                style: const TextStyle(fontSize: 10, color: Colors.grey)),
           ],
         ),
       ),
