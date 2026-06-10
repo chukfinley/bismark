@@ -40,6 +40,8 @@ class _HomePageState extends State<HomePage> {
   List<Deal> _deals = [];
   Position? _pos;
   bool _loading = true;
+  double _refLat = 54.3233;
+  double _refLon = 10.1394;
 
   String get _zip => _zipCtrl.text.trim().isEmpty ? '24238' : _zipCtrl.text.trim();
 
@@ -79,7 +81,9 @@ class _HomePageState extends State<HomePage> {
     final ref = _pos != null
         ? [_pos!.latitude, _pos!.longitude]
         : plzCentroid(_zip);
-    _deals = buildDeals(_rewe, _chain, ref[0], ref[1]);
+    _refLat = ref[0];
+    _refLon = ref[1];
+    _deals = buildDeals(_rewe, _chain, _refLat, _refLon);
   }
 
   Future<void> _locate() async {
@@ -114,9 +118,31 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Deal? _favorite() {
+  /// Angepinnte Stammmärkte: REWE Raisdorf (Live-Preis) + EDEKA Ley Selent
+  /// (Preis nur wenn diese Woche ein Angebot läuft).
+  List<Market> _favoriteMarkets() {
+    final favs = <Market>[];
+    for (final m in kMarkets) {
+      if (m.ident == kFavoriteIdent) favs.add(m); // REWE Schröder Raisdorf
+    }
+    for (final m in kMarkets) {
+      if (m.retailer == 'EDEKA' && m.address.contains('24238')) {
+        favs.add(m); // EDEKA Ley, Selent
+        break;
+      }
+    }
+    return favs;
+  }
+
+  /// Findet das zum Stammmarkt passende Deal (Live-Preis oder Ketten-Angebot).
+  Deal? _dealFor(Market m) {
     for (final d in _deals) {
-      if (d.ident == kFavoriteIdent) return d;
+      if (m.ident != null && d.ident == m.ident) return d;
+      if (m.ident == null &&
+          d.retailer == m.retailer &&
+          d.address == m.address) {
+        return d;
+      }
     }
     return null;
   }
@@ -162,12 +188,27 @@ class _HomePageState extends State<HomePage> {
                       child: Center(child: Text('Keine Preise gefunden.')),
                     )
                   else ...[
-                    if (_favorite() != null) ...[
-                      _FavoriteCard(
-                          deal: _favorite()!,
-                          onTap: () => _openDeal(_favorite()!)),
-                      const SizedBox(height: 8),
-                    ],
+                    ..._favoriteMarkets().map((m) {
+                      final deal = _dealFor(m);
+                      final dist = (m.lat != null && m.lon != null)
+                          ? haversineKm(_refLat, _refLon, m.lat!, m.lon!)
+                          : null;
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: _FavoriteCard(
+                          market: m,
+                          deal: deal,
+                          distanceKm: dist,
+                          onTap: () => deal != null
+                              ? _openDeal(deal)
+                              : openInMaps(
+                                  name: m.name,
+                                  lat: m.lat,
+                                  lon: m.lon,
+                                  address: m.address),
+                        ),
+                      );
+                    }),
                     _HeroCard(best: _deals.first, onTap: () => _openDeal(_deals.first)),
                     const SizedBox(height: 8),
                     const _SectionTitle('Alle Preise & Angebote – günstigster zuerst'),
@@ -237,13 +278,20 @@ class _PlzBar extends StatelessWidget {
 }
 
 class _FavoriteCard extends StatelessWidget {
-  final Deal deal;
+  final Market market;
+  final Deal? deal;
+  final double? distanceKm;
   final VoidCallback onTap;
-  const _FavoriteCard({required this.deal, required this.onTap});
+  const _FavoriteCard(
+      {required this.market,
+      required this.deal,
+      required this.distanceKm,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final reduced = deal?.reduced ?? false;
     return Card(
       elevation: 1,
       color: cs.surfaceContainerHighest,
@@ -263,18 +311,17 @@ class _FavoriteCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Dein Markt',
+                    Text('Dein Markt · ${_retailerLabel(market.retailer)}',
                         style: Theme.of(context).textTheme.labelMedium),
-                    Text(deal.title,
+                    Text(market.name,
                         style: Theme.of(context)
                             .textTheme
                             .titleMedium
                             ?.copyWith(fontWeight: FontWeight.w600)),
-                    if (deal.address != null)
-                      Text(deal.address!,
-                          style: Theme.of(context).textTheme.bodySmall),
-                    if (deal.distanceKm != null)
-                      Text('${deal.distanceKm!.toStringAsFixed(1)} km',
+                    Text(market.address,
+                        style: Theme.of(context).textTheme.bodySmall),
+                    if (distanceKm != null)
+                      Text('${distanceKm!.toStringAsFixed(1)} km',
                           style: TextStyle(color: cs.primary)),
                   ],
                 ),
@@ -282,13 +329,26 @@ class _FavoriteCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Text('${deal.price.toStringAsFixed(2)} €',
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleLarge
-                          ?.copyWith(fontWeight: FontWeight.bold)),
-                  Text('+${deal.pfand.toStringAsFixed(2)} € Pfand',
-                      style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                  if (deal != null) ...[
+                    Text('${deal!.price.toStringAsFixed(2)} €',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: reduced ? cs.error : null)),
+                    if (reduced)
+                      Text('statt ${deal!.strike!.toStringAsFixed(2)} €',
+                          style: const TextStyle(
+                              fontSize: 11,
+                              decoration: TextDecoration.lineThrough)),
+                    Text('+${deal!.pfand.toStringAsFixed(2)} € Pfand',
+                        style:
+                            const TextStyle(fontSize: 10, color: Colors.grey)),
+                  ] else
+                    SizedBox(
+                      width: 110,
+                      child: Text('Diese Woche kein Online-Angebot',
+                          textAlign: TextAlign.end,
+                          style: Theme.of(context).textTheme.bodySmall),
+                    ),
                   const Icon(Icons.directions, size: 18),
                 ],
               ),
