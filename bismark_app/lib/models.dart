@@ -32,6 +32,26 @@ class Market {
   }
 }
 
+/// Ein wochenweises Ketten-Angebot (marktguru-Aggregator, PLZ-basiert).
+/// Gilt fuer die ganze Kette in der Naehe, nicht fuer eine einzelne Filiale.
+class ChainOffer {
+  final String chain; // z.B. EDEKA, Getränke Hoffmann
+  final String description; // "Classic, Medium oder Still 12 x 0,75 l Glas …"
+  final double price; // Angebotspreis Ware (EUR)
+  final double? oldPrice; // Streichpreis falls vorhanden
+  final double? perLiter; // referencePrice
+  final DateTime? validTo;
+
+  const ChainOffer({
+    required this.chain,
+    required this.description,
+    required this.price,
+    this.oldPrice,
+    this.perLiter,
+    this.validTo,
+  });
+}
+
 /// Ein Preis-Angebot fuer das Produkt in einem Markt.
 class Offer {
   final Market market;
@@ -40,14 +60,16 @@ class Offer {
   final double? regular; // regulaerer Preis (EUR)
   final double? pfand; // Pfand (EUR)
   final String? error;
+  double? distanceKm; // Entfernung zum Nutzer (wenn Standort an)
 
-  const Offer({
+  Offer({
     required this.market,
     this.available = false,
     this.price,
     this.regular,
     this.pfand,
     this.error,
+    this.distanceKm,
   });
 
   bool get reduced =>
