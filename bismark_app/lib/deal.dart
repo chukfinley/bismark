@@ -9,8 +9,12 @@ import 'markets.dart';
 
 enum DealSource { reweLive, weeklyOffer }
 
+/// REWE-Markt der als "Dein Markt" oben angepinnt wird (Raisdorf, Schröder).
+const String kFavoriteIdent = '210140';
+
 class Deal {
   final String retailer; // REWE, EDEKA, GETRAENKE_HOFFMANN …
+  final String? ident; // REWE wwIdent (null bei Ketten-Angeboten)
   final String title; // Marktname (oder Kette wenn kein Markt bekannt)
   final String? address;
   final double? lat;
@@ -25,6 +29,7 @@ class Deal {
 
   Deal({
     required this.retailer,
+    this.ident,
     required this.title,
     required this.address,
     required this.lat,
@@ -116,6 +121,7 @@ List<Deal> buildDeals(
   for (final o in reweOffers.where((o) => o.available && o.price != null)) {
     deals.add(Deal(
       retailer: 'REWE',
+      ident: o.market.ident,
       title: o.market.name,
       address: o.market.address,
       lat: o.market.lat,

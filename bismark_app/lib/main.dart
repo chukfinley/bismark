@@ -114,6 +114,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Deal? _favorite() {
+    for (final d in _deals) {
+      if (d.ident == kFavoriteIdent) return d;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,6 +162,12 @@ class _HomePageState extends State<HomePage> {
                       child: Center(child: Text('Keine Preise gefunden.')),
                     )
                   else ...[
+                    if (_favorite() != null) ...[
+                      _FavoriteCard(
+                          deal: _favorite()!,
+                          onTap: () => _openDeal(_favorite()!)),
+                      const SizedBox(height: 8),
+                    ],
                     _HeroCard(best: _deals.first, onTap: () => _openDeal(_deals.first)),
                     const SizedBox(height: 8),
                     const _SectionTitle('Alle Preise & Angebote – günstigster zuerst'),
@@ -217,6 +230,70 @@ class _PlzBar extends StatelessWidget {
               ),
             TextButton(onPressed: onSubmit, child: const Text('Laden')),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _FavoriteCard extends StatelessWidget {
+  final Deal deal;
+  final VoidCallback onTap;
+  const _FavoriteCard({required this.deal, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Card(
+      elevation: 1,
+      color: cs.surfaceContainerHighest,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(color: cs.primary, width: 1.5),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(Icons.star, color: cs.primary),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Dein Markt',
+                        style: Theme.of(context).textTheme.labelMedium),
+                    Text(deal.title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(fontWeight: FontWeight.w600)),
+                    if (deal.address != null)
+                      Text(deal.address!,
+                          style: Theme.of(context).textTheme.bodySmall),
+                    if (deal.distanceKm != null)
+                      Text('${deal.distanceKm!.toStringAsFixed(1)} km',
+                          style: TextStyle(color: cs.primary)),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text('${deal.price.toStringAsFixed(2)} €',
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold)),
+                  Text('+${deal.pfand.toStringAsFixed(2)} € Pfand',
+                      style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                  const Icon(Icons.directions, size: 18),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

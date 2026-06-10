@@ -53,6 +53,8 @@ class OfferService {
       if (vd.isNotEmpty && vd.first['to'] != null) {
         to = DateTime.tryParse('${vd.first['to']}');
       }
+      // Abgelaufene Angebote nicht anzeigen.
+      if (to != null && to.isBefore(DateTime.now())) continue;
       offers.add(ChainOffer(
         chain: chain,
         description: '${o['description'] ?? ''}',
