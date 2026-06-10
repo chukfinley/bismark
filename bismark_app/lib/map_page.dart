@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:url_launcher/url_launcher.dart';
+
+import 'maps_util.dart';
 
 import 'models.dart';
 import 'markets.dart';
@@ -55,20 +56,12 @@ class _MapPageState extends State<MapPage> {
   void _snack(String m) => ScaffoldMessenger.of(context)
       .showSnackBar(SnackBar(content: Text(m)));
 
-  Future<void> _openMaps(Market m) async {
-    final q = (m.lat != null && m.lon != null)
-        ? '${m.lat},${m.lon}'
-        : Uri.encodeComponent('${m.name}, ${m.address}');
-    // geo: oeffnet die Standard-Karten-App (Android), Fallback Google Maps Web.
-    final geo = Uri.parse('geo:0,0?q=$q(${Uri.encodeComponent(m.name)})');
-    final web = Uri.parse(
-        'https://www.google.com/maps/search/?api=1&query=$q');
-    if (await canLaunchUrl(geo)) {
-      await launchUrl(geo, mode: LaunchMode.externalApplication);
-    } else {
-      await launchUrl(web, mode: LaunchMode.externalApplication);
-    }
-  }
+  Future<void> _openMaps(Market m) => openInMaps(
+        name: m.name,
+        lat: m.lat,
+        lon: m.lon,
+        address: m.address,
+      );
 
   Color _color(Market m) {
     switch (m.retailer) {

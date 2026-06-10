@@ -1,5 +1,6 @@
-// Gemeinsamer Karten-Launcher: öffnet den Markt in der Standard-Karten-App
-// (Android geo:) bzw. Google Maps als Fallback. Von Liste UND Karte genutzt.
+// Öffnet den Markt in der Standard-Karten-/Geo-App via geo:-URI.
+// Kein Google-Maps-Link. geo: wird DIREKT gestartet (nicht über
+// canLaunchUrl, das auf Android 11+ ohne <queries> fälschlich false liefert).
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> openInMaps({
@@ -8,14 +9,24 @@ Future<void> openInMaps({
   double? lon,
   String? address,
 }) async {
-  final hasCoords = lat != null && lon != null;
-  final q = hasCoords ? '$lat,$lon' : Uri.encodeComponent(address ?? name ?? '');
   final label = Uri.encodeComponent(name ?? '');
-  final geo = Uri.parse('geo:0,0?q=$q($label)');
-  final web = Uri.parse('https://www.google.com/maps/search/?api=1&query=$q');
-  if (await canLaunchUrl(geo)) {
-    await launchUrl(geo, mode: LaunchMode.externalApplication);
+  final Uri geo;
+  if (lat != null && lon != null) {
+    // Pin auf Koordinate, mit Label.
+    geo = Uri.parse('geo:$lat,$lon?q=$lat,$lon($label)');
   } else {
-    await launchUrl(web, mode: LaunchMode.externalApplication);
+    geo = Uri.parse('geo:0,0?q=${Uri.encodeComponent(address ?? name ?? '')}');
   }
+  try {
+    final ok = await launchUrl(geo, mode: LaunchMode.externalApplication);
+    if (ok) return;
+  } catch (_) {
+    // keine Geo-App -> harter Fallback unten
+  }
+  // Letzter Ausweg, falls gar keine Karten-App vorhanden ist.
+  final q = (lat != null && lon != null)
+      ? '$lat,$lon'
+      : Uri.encodeComponent(address ?? name ?? '');
+  await launchUrl(Uri.parse('https://www.google.com/maps/search/?api=1&query=$q'),
+      mode: LaunchMode.externalApplication);
 }
