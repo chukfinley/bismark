@@ -1,0 +1,862 @@
+[
+ {
+  "dist_km": 0.1,
+  "chain": "Rewe",
+  "title": "Rewe Stern",
+  "street": "Holstenstr. 1",
+  "plz": "24103",
+  "city": "Kiel",
+  "lat": 54.3226066,
+  "lon": 10.1394603
+ },
+ {
+  "dist_km": 0.4,
+  "chain": "Edeka",
+  "title": "Edeka Holstenstraße",
+  "street": "Holstenstr. 55-59",
+  "plz": "24103",
+  "city": "Kiel",
+  "lat": 54.3209269,
+  "lon": 10.1351445
+ },
+ {
+  "dist_km": 0.7,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Wilhelminenstr. 10",
+  "plz": "24103",
+  "city": "Kiel",
+  "lat": 54.3283765,
+  "lon": 10.1335618
+ },
+ {
+  "dist_km": 0.8,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Knooper Weg 41-43",
+  "plz": "24103",
+  "city": "Kiel",
+  "lat": 54.3241314,
+  "lon": 10.1268806
+ },
+ {
+  "dist_km": 0.9,
+  "chain": "Edeka",
+  "title": "Edeka",
+  "street": "Sophienblatt 20",
+  "plz": "24103",
+  "city": "Kiel",
+  "lat": 54.3166162,
+  "lon": 10.1305313
+ },
+ {
+  "dist_km": 1.0,
+  "chain": "Rewe",
+  "title": "Rewe Grützmacher",
+  "street": "Sophienblatt 25-27",
+  "plz": "24114",
+  "city": "Kiel",
+  "lat": 54.3151733,
+  "lon": 10.1319956
+ },
+ {
+  "dist_km": 1.1,
+  "chain": "Schlemmer",
+  "title": "Schlemmer-Markt Freund",
+  "street": "Holtenauer Str. 70-72",
+  "plz": "24105",
+  "city": "Kiel",
+  "lat": 54.3325276,
+  "lon": 10.1327875
+ },
+ {
+  "dist_km": 1.3,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Holtenauer Str. 71",
+  "plz": "24105",
+  "city": "Kiel",
+  "lat": 54.3342081,
+  "lon": 10.1328807
+ },
+ {
+  "dist_km": 1.4,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Weißenburgstr. 15",
+  "plz": "24116",
+  "city": "Kiel",
+  "lat": 54.3251041,
+  "lon": 10.1183805
+ },
+ {
+  "dist_km": 1.4,
+  "chain": "Rewe",
+  "title": "Rewe Borchers",
+  "street": "Karlstal 27a",
+  "plz": "24143",
+  "city": "Kiel",
+  "lat": 54.3111125,
+  "lon": 10.144661
+ },
+ {
+  "dist_km": 1.5,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Kirchhofallee 66a",
+  "plz": "24114",
+  "city": "Kiel",
+  "lat": 54.3166261,
+  "lon": 10.119414
+ },
+ {
+  "dist_km": 1.8,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Gutenbergstr. 77",
+  "plz": "24116",
+  "city": "Kiel",
+  "lat": 54.3324234,
+  "lon": 10.1159774
+ },
+ {
+  "dist_km": 2.0,
+  "chain": "Markant",
+  "title": "Markant",
+  "street": "Alte Weide 4",
+  "plz": "24116",
+  "city": "Kiel",
+  "lat": 54.3309712,
+  "lon": 10.1121935
+ },
+ {
+  "dist_km": 2.2,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Schönberger Str. 133",
+  "plz": "24148",
+  "city": "Kiel",
+  "lat": 54.3243114,
+  "lon": 10.1727404
+ },
+ {
+  "dist_km": 2.3,
+  "chain": "Getränke Hoffmann",
+  "title": "Getränke Hoffmann Senff",
+  "street": "Lauenburger Str. 2",
+  "plz": "24113",
+  "city": "Kiel",
+  "lat": 54.3038166,
+  "lon": 10.1286601
+ },
+ {
+  "dist_km": 2.4,
+  "chain": "Edeka",
+  "title": "Edeka Baasch",
+  "street": "Grippstr. 2",
+  "plz": "24118",
+  "city": "Kiel",
+  "lat": 54.3426289,
+  "lon": 10.1242868
+ },
+ {
+  "dist_km": 2.5,
+  "chain": "Rewe",
+  "title": "Rewe Center Breske",
+  "street": "Winterbeker Weg 44",
+  "plz": "24114",
+  "city": "Kiel",
+  "lat": 54.3088488,
+  "lon": 10.1098928
+ },
+ {
+  "dist_km": 2.8,
+  "chain": "Citti",
+  "title": "Citti",
+  "street": "Mühlendamm 1",
+  "plz": "24113",
+  "city": "Kiel",
+  "lat": 54.313434,
+  "lon": 10.0997125
+ },
+ {
+  "dist_km": 2.8,
+  "chain": "Markant",
+  "title": "Markant",
+  "street": "Philipp-Reis-Weg 2",
+  "plz": "24148",
+  "city": "Kiel",
+  "lat": 54.3175002,
+  "lon": 10.1815091
+ },
+ {
+  "dist_km": 2.8,
+  "chain": "Nahkauf",
+  "title": "Nahkauf Kiel",
+  "street": "Hamburger Chaussee 114",
+  "plz": "24113",
+  "city": "Kiel",
+  "lat": 54.3036096,
+  "lon": 10.1118812
+ },
+ {
+  "dist_km": 3.3,
+  "chain": "Famila",
+  "title": "Famila",
+  "street": "Preetzer Str. 298",
+  "plz": "24147",
+  "city": "Kiel",
+  "lat": 54.2984826,
+  "lon": 10.1676608
+ },
+ {
+  "dist_km": 3.5,
+  "chain": "Edeka",
+  "title": "Edeka Münster",
+  "street": "Hamburger Chaussee 178",
+  "plz": "24113",
+  "city": "Kiel",
+  "lat": 54.2994866,
+  "lon": 10.1045736
+ },
+ {
+  "dist_km": 3.5,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Langer Rehm 22",
+  "plz": "24149",
+  "city": "Kiel",
+  "lat": 54.335578,
+  "lon": 10.1899142
+ },
+ {
+  "dist_km": 3.7,
+  "chain": "Lebensmittel Freund",
+  "title": "Lebensmittel Freund",
+  "street": "Holtenauer Str. 307",
+  "plz": "24106",
+  "city": "Kiel",
+  "lat": 54.3557806,
+  "lon": 10.1302997
+ },
+ {
+  "dist_km": 3.7,
+  "chain": "Markant",
+  "title": "Markant",
+  "street": "Kopperpahler Allee 121",
+  "plz": "24119",
+  "city": "Kronshagen",
+  "lat": 54.3419577,
+  "lon": 10.0920775
+ },
+ {
+  "dist_km": 3.8,
+  "chain": "Famila",
+  "title": "Famila",
+  "street": "Schönkirchener Str. 80",
+  "plz": "24149",
+  "city": "Kiel",
+  "lat": 54.3289862,
+  "lon": 10.1978986
+ },
+ {
+  "dist_km": 3.8,
+  "chain": "Rewe",
+  "title": "Rewe Pflesser",
+  "street": "Projensdorfer Str. 148-150",
+  "plz": "24106",
+  "city": "Kiel",
+  "lat": 54.3556511,
+  "lon": 10.1206193
+ },
+ {
+  "dist_km": 3.9,
+  "chain": "Getränke Hoffmann",
+  "title": "Getränke Hoffmann Hansen",
+  "street": "Rendsburger Landstr. 206",
+  "plz": "24113",
+  "city": "Kiel",
+  "lat": 54.3017222,
+  "lon": 10.0914452
+ },
+ {
+  "dist_km": 4.0,
+  "chain": "Getränke Hoffmann",
+  "title": "Getränke Hoffmann",
+  "street": "Steenbeker Weg 34",
+  "plz": "24106",
+  "city": "Kiel",
+  "lat": 54.3549244,
+  "lon": 10.1107897
+ },
+ {
+  "dist_km": 4.2,
+  "chain": "Famila",
+  "title": "Famila",
+  "street": "Prinz-Heinrich-Str. 20",
+  "plz": "24106",
+  "city": "Kiel",
+  "lat": 54.3607052,
+  "lon": 10.1333098
+ },
+ {
+  "dist_km": 4.2,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Klingenbergstr. 64",
+  "plz": "24222",
+  "city": "Schwentinental",
+  "lat": 54.3129424,
+  "lon": 10.2008939
+ },
+ {
+  "dist_km": 4.3,
+  "chain": "Edeka",
+  "title": "Edeka Ristow",
+  "street": "Am Eksol 18",
+  "plz": "24248",
+  "city": "Mönkeberg",
+  "lat": 54.3488032,
+  "lon": 10.1890875
+ },
+ {
+  "dist_km": 4.3,
+  "chain": "Famila",
+  "title": "Famila",
+  "street": "Seekoppelweg 2",
+  "plz": "24113",
+  "city": "Kiel",
+  "lat": 54.2988764,
+  "lon": 10.0870416
+ },
+ {
+  "dist_km": 4.3,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Landskroner Weg 2",
+  "plz": "24146",
+  "city": "Kiel",
+  "lat": 54.2940277,
+  "lon": 10.1833221
+ },
+ {
+  "dist_km": 4.3,
+  "chain": "Rewe",
+  "title": "Rewe Balke",
+  "street": "Suchsdorfer Weg 7",
+  "plz": "24119",
+  "city": "Kronshagen",
+  "lat": 54.3374829,
+  "lon": 10.0774209
+ },
+ {
+  "dist_km": 4.5,
+  "chain": "Edeka",
+  "title": "Edeka Fiedler",
+  "street": "Dr.-Hell-Str. 1",
+  "plz": "24107",
+  "city": "Kiel",
+  "lat": 54.3507335,
+  "lon": 10.0878866
+ },
+ {
+  "dist_km": 4.5,
+  "chain": "Famila",
+  "title": "Famila",
+  "street": "Grot Steenbusch 35",
+  "plz": "24145",
+  "city": "Kiel",
+  "lat": 54.2826051,
+  "lon": 10.1326559
+ },
+ {
+  "dist_km": 4.6,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Eckernförder Str. 362",
+  "plz": "24107",
+  "city": "Kiel",
+  "lat": 54.3528378,
+  "lon": 10.0902842
+ },
+ {
+  "dist_km": 4.9,
+  "chain": "Rewe",
+  "title": "Rewe Balke",
+  "street": "Göteborgring 3",
+  "plz": "24109",
+  "city": "Kiel",
+  "lat": 54.3199184,
+  "lon": 10.0637012
+ },
+ {
+  "dist_km": 5.4,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Pahlblöken 2",
+  "plz": "24232",
+  "city": "Schönkirchen",
+  "lat": 54.3385165,
+  "lon": 10.2186991
+ },
+ {
+  "dist_km": 5.4,
+  "chain": "Rewe",
+  "title": "Rewe Preuß",
+  "street": "Richthofenstr. 57",
+  "plz": "24159",
+  "city": "Kiel",
+  "lat": 54.3717574,
+  "lon": 10.1353
+ },
+ {
+  "dist_km": 5.5,
+  "chain": "Famila",
+  "title": "Famila",
+  "street": "Kurt-Schumacher-Platz 4",
+  "plz": "24109",
+  "city": "Kiel",
+  "lat": 54.3235232,
+  "lon": 10.0541063
+ },
+ {
+  "dist_km": 5.7,
+  "chain": "Kaufland",
+  "title": "Kaufland",
+  "street": "Skandinaviendamm 299",
+  "plz": "24109",
+  "city": "Kiel",
+  "lat": 54.3203222,
+  "lon": 10.0520713
+ },
+ {
+  "dist_km": 6.5,
+  "chain": "Kaufland",
+  "title": "Kaufland",
+  "street": "Mergenthaler Str. 13",
+  "plz": "24223",
+  "city": "Schwentinental",
+  "lat": 54.2876776,
+  "lon": 10.2194484
+ },
+ {
+  "dist_km": 6.6,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Am Schmiedeplatz 2",
+  "plz": "24226",
+  "city": "Heikendorf",
+  "lat": 54.3696781,
+  "lon": 10.202994
+ },
+ {
+  "dist_km": 6.9,
+  "chain": "Getränke Hoffmann",
+  "title": "Getränke Hoffmann",
+  "street": "Friedrichsruher Weg 5",
+  "plz": "24161",
+  "city": "Altenholz",
+  "lat": 54.3851628,
+  "lon": 10.1383237
+ },
+ {
+  "dist_km": 7.0,
+  "chain": "Edeka",
+  "title": "Edeka Johannsen",
+  "street": "Ostpreußenplatz 3",
+  "plz": "24161",
+  "city": "Altenholz",
+  "lat": 54.3860118,
+  "lon": 10.1342648
+ },
+ {
+  "dist_km": 7.8,
+  "chain": "Rewe",
+  "title": "Rewe Schröder",
+  "street": "Rönner Weg 2a",
+  "plz": "24223",
+  "city": "Schwentinental",
+  "lat": 54.2828292,
+  "lon": 10.2383727
+ },
+ {
+  "dist_km": 8.0,
+  "chain": "Edeka",
+  "title": "Edeka Ristow",
+  "street": "Tobringer 4",
+  "plz": "24226",
+  "city": "Heikendorf",
+  "lat": 54.3765208,
+  "lon": 10.2221156
+ },
+ {
+  "dist_km": 8.3,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "An der Schanze 40",
+  "plz": "24159",
+  "city": "Kiel",
+  "lat": 54.3948839,
+  "lon": 10.1753407
+ },
+ {
+  "dist_km": 8.4,
+  "chain": "Getränke Hoffmann",
+  "title": "Getränke Hoffmann Lüthke",
+  "street": "Hamburger Chaussee 13",
+  "plz": "24113",
+  "city": "Molfsee",
+  "lat": 54.2620149,
+  "lon": 10.0635777
+ },
+ {
+  "dist_km": 8.7,
+  "chain": "Famila",
+  "title": "Famila",
+  "street": "Altenholzer Str. 9-11",
+  "plz": "24161",
+  "city": "Altenholz",
+  "lat": 54.4011515,
+  "lon": 10.1263345
+ },
+ {
+  "dist_km": 9.7,
+  "chain": "Edeka",
+  "title": "Edeka Johannsen",
+  "street": "Erdbeerfeld 4",
+  "plz": "24161",
+  "city": "Altenholz",
+  "lat": 54.4104939,
+  "lon": 10.1288148
+ },
+ {
+  "dist_km": 10.2,
+  "chain": "Edeka",
+  "title": "Edeka Alpen",
+  "street": "Bullbrücke 4",
+  "plz": "24235",
+  "city": "Laboe",
+  "lat": 54.3974618,
+  "lon": 10.2327496
+ },
+ {
+  "dist_km": 10.3,
+  "chain": "Getränke Hoffmann",
+  "title": "Getränke Hoffmann Plath",
+  "street": "Erich-Schwarz-Weg 1",
+  "plz": "24235",
+  "city": "Laboe",
+  "lat": 54.3990117,
+  "lon": 10.2316719
+ },
+ {
+  "dist_km": 10.5,
+  "chain": "Edeka",
+  "title": "Edeka Hauschildt",
+  "street": "Dorfstr. 14",
+  "plz": "24220",
+  "city": "Flintbek",
+  "lat": 54.237684,
+  "lon": 10.0700747
+ },
+ {
+  "dist_km": 10.6,
+  "chain": "Markant",
+  "title": "Markant",
+  "street": "Eiderkamp 1",
+  "plz": "24220",
+  "city": "Flintbek",
+  "lat": 54.2397728,
+  "lon": 10.0614825
+ },
+ {
+  "dist_km": 10.6,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Langenfelde 126a",
+  "plz": "24159",
+  "city": "Kiel",
+  "lat": 54.41723,
+  "lon": 10.1703733
+ },
+ {
+  "dist_km": 11.6,
+  "chain": "Markant",
+  "title": "Markant",
+  "street": "Scharnhagener Str. 3-5",
+  "plz": "24229",
+  "city": "Dänischenhagen",
+  "lat": 54.42764,
+  "lon": 10.13077
+ },
+ {
+  "dist_km": 12.6,
+  "chain": "Edeka",
+  "title": "Edeka Schröder",
+  "street": "Kieler Str. 29",
+  "plz": "24211",
+  "city": "Preetz",
+  "lat": 54.2431318,
+  "lon": 10.2765912
+ },
+ {
+  "dist_km": 13.0,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Hufenweg 24",
+  "plz": "24211",
+  "city": "Preetz",
+  "lat": 54.2366484,
+  "lon": 10.2745718
+ },
+ {
+  "dist_km": 13.3,
+  "chain": "Edeka",
+  "title": "Edeka Schmoock",
+  "street": "Hasselrader Weg 6",
+  "plz": "24242",
+  "city": "Felde",
+  "lat": 54.3047229,
+  "lon": 9.9361725
+ },
+ {
+  "dist_km": 13.3,
+  "chain": "Getränke Hoffmann",
+  "title": "Getränke Hoffmann Truckenmüller",
+  "street": "Wakendorfer Str. 73",
+  "plz": "24211",
+  "city": "Preetz",
+  "lat": 54.2412411,
+  "lon": 10.2884227
+ },
+ {
+  "dist_km": 13.4,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Markt 8",
+  "plz": "24211",
+  "city": "Preetz",
+  "lat": 54.2351692,
+  "lon": 10.2807399
+ },
+ {
+  "dist_km": 13.7,
+  "chain": "Edeka",
+  "title": "Edeka Alpen",
+  "street": "Strandstr. 2b",
+  "plz": "24235",
+  "city": "Wendtorf",
+  "lat": 54.4116643,
+  "lon": 10.2857814
+ },
+ {
+  "dist_km": 14.2,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Süderstr. 4",
+  "plz": "24214",
+  "city": "Gettorf",
+  "lat": 54.4057266,
+  "lon": 9.972631
+ },
+ {
+  "dist_km": 14.3,
+  "chain": "Edeka",
+  "title": "Edeka Johannsen",
+  "street": "Ravensberg 2",
+  "plz": "24214",
+  "city": "Gettorf",
+  "lat": 54.413474,
+  "lon": 9.9824396
+ },
+ {
+  "dist_km": 14.3,
+  "chain": "Getränke Hoffmann",
+  "title": "Getränke Hoffmann Zapala",
+  "street": "Ravensberg 2c",
+  "plz": "24214",
+  "city": "Gettorf",
+  "lat": 54.4136422,
+  "lon": 9.9828021
+ },
+ {
+  "dist_km": 14.6,
+  "chain": "Edeka",
+  "title": "Edeka Scheich",
+  "street": "Plöner Landstr. 18",
+  "plz": "24211",
+  "city": "Schellhorn",
+  "lat": 54.2291646,
+  "lon": 10.2955303
+ },
+ {
+  "dist_km": 16.8,
+  "chain": "Rewe",
+  "title": "Rewe Zubke",
+  "street": "Kuhlenkamp 1c",
+  "plz": "24217",
+  "city": "Schönberg",
+  "lat": 54.3891624,
+  "lon": 10.3725897
+ },
+ {
+  "dist_km": 16.9,
+  "chain": "Edeka",
+  "title": "Edeka Alpen",
+  "street": "Bahnhofstr. 20",
+  "plz": "24217",
+  "city": "Schönberg",
+  "lat": 54.3906497,
+  "lon": 10.372829
+ },
+ {
+  "dist_km": 16.9,
+  "chain": "Markant",
+  "title": "Markant",
+  "street": "Eichkamp 9",
+  "plz": "24217",
+  "city": "Schönberg",
+  "lat": 54.3867031,
+  "lon": 10.3758925
+ },
+ {
+  "dist_km": 17.3,
+  "chain": "Rewe",
+  "title": "Rewe Rehmke",
+  "street": "Mühlenstr. 12",
+  "plz": "24582",
+  "city": "Bordesholm",
+  "lat": 54.1776438,
+  "lon": 10.0474138
+ },
+ {
+  "dist_km": 17.5,
+  "chain": "E-Aktiv",
+  "title": "E-aktiv Markt Scheller",
+  "street": "Kieler Str. 2",
+  "plz": "24796",
+  "city": "Bredenbek",
+  "lat": 54.3245638,
+  "lon": 9.8689882
+ },
+ {
+  "dist_km": 17.6,
+  "chain": "Edeka",
+  "title": "Edeka Dormeier",
+  "street": "Bahnhofstr. 29-33",
+  "plz": "24582",
+  "city": "Bordesholm",
+  "lat": 54.1744513,
+  "lon": 10.0455201
+ },
+ {
+  "dist_km": 17.7,
+  "chain": "Getränke Hoffmann",
+  "title": "Getränke Hoffmann Voges",
+  "street": "Bahnhofstr. 30",
+  "plz": "24582",
+  "city": "Bordesholm",
+  "lat": 54.1735794,
+  "lon": 10.0453251
+ },
+ {
+  "dist_km": 19.3,
+  "chain": "Edeka",
+  "title": "Edeka Ley",
+  "street": "Kieler Str. 2",
+  "plz": "24238",
+  "city": "Selent",
+  "lat": 54.2901371,
+  "lon": 10.4306949
+ },
+ {
+  "dist_km": 20.4,
+  "chain": "Frischemarkt",
+  "title": "Frischemarkt Alpen",
+  "street": "Käptn&#039;s Gang 3",
+  "plz": "24217",
+  "city": "Schönberg",
+  "lat": 54.4130214,
+  "lon": 10.4140165
+ },
+ {
+  "dist_km": 23.4,
+  "chain": "Edeka",
+  "title": "Edeka Grümmi",
+  "street": "Langenrade 2",
+  "plz": "24326",
+  "city": "Ascheberg",
+  "lat": 54.1502136,
+  "lon": 10.3448521
+ },
+ {
+  "dist_km": 23.7,
+  "chain": "Sonstige",
+  "title": "Markttreff Alpen",
+  "street": "Dorfstr. 28",
+  "plz": "24257",
+  "city": "Hohenfelde",
+  "lat": 54.3701701,
+  "lon": 10.4965779
+ },
+ {
+  "dist_km": 23.9,
+  "chain": "Edeka",
+  "title": "Edeka Grümmi",
+  "street": "Roschdohler Weg 12",
+  "plz": "24536",
+  "city": "Neumünster",
+  "lat": 54.1285128,
+  "lon": 9.9854506
+ },
+ {
+  "dist_km": 24.0,
+  "chain": "Rewe",
+  "title": "Rewe",
+  "street": "Bornhöveder Landstr. 2",
+  "plz": "24601",
+  "city": "Wankendorf",
+  "lat": 54.1116001,
+  "lon": 10.207504
+ },
+ {
+  "dist_km": 24.4,
+  "chain": "Edeka",
+  "title": "Edeka Baasch",
+  "street": "Sauerstr. 1-3",
+  "plz": "24340",
+  "city": "Eckernförde",
+  "lat": 54.4510552,
+  "lon": 9.8327962
+ },
+ {
+  "dist_km": 24.5,
+  "chain": "Sonstige",
+  "title": "Behn Getränkewelt",
+  "street": "Rendsburger Str. 124",
+  "plz": "24340",
+  "city": "Eckernförde",
+  "lat": 54.4507184,
+  "lon": 9.8299807
+ },
+ {
+  "dist_km": 24.5,
+  "chain": "Famila",
+  "title": "Famila",
+  "street": "Rendsburger Str. 119",
+  "plz": "24340",
+  "city": "Eckernförde",
+  "lat": 54.4528146,
+  "lon": 9.8341276
+ },
+ {
+  "dist_km": 24.5,
+  "chain": "Sonstige",
+  "title": "Ostseemarkt Heide",
+  "street": "Strandweg 31",
+  "plz": "24369",
+  "city": "Waabs",
+  "lat": 54.5283664,
+  "lon": 10.0026556
+ }
+]
