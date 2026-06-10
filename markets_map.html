@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset=utf-8><title>Märkte Umkreis Kiel</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<link rel=stylesheet href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>html,body,#map{height:100%;margin:0}.legend{position:absolute;z-index:1000;right:10px;top:10px;background:#fff;padding:8px 12px;border-radius:8px;font:13px sans-serif;box-shadow:0 1px 6px rgba(0,0,0,.3)}.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px}</style>
+</head><body>
+<div class=legend><div><i style="background:#cc0000"></i>REWE</div><div><i style="background:#005ca9"></i>EDEKA</div><div><i style="background:#00457c"></i>ALDI</div></div>
+<div id=map></div>
+<script>
+var map=L.map('map').setView([54.32765594000001,10.163014356],11);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(map);
+function ic(c){return L.divIcon({className:'',html:'<div style="background:'+c+';width:18px;height:18px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 3px #000"></div>',iconSize:[18,18],iconAnchor:[9,9]});}
+L.marker([54.3227145,10.1391309],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Adrian Stern</b><br>Holstenstr. 1, 24103 Kiel<br><small>REWE · ID 8544048</small>');
+L.marker([54.3242579,10.1265539],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Knooper Weg 41-43, 24103 Kiel<br><small>REWE · ID 830868</small>');
+L.marker([54.3284181,10.1332702],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Wilhelminenstraße 10, 24103 Kiel<br><small>REWE · ID 531083</small>');
+L.marker([54.3324348,10.1324347],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Holtenauer Str. 69-71, 24105 Kiel<br><small>REWE · ID 561204</small>');
+L.marker([54.3527993,10.0903112],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Eckernförder Str. 362, 24107 Kiel<br><small>REWE · ID 561221</small>');
+L.marker([54.3198764,10.0635504],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Göteborgring 3, 24109 Kiel<br><small>REWE · ID 561244</small>');
+L.marker([54.3037356,10.1116717],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>Nahkauf</b><br>Hamburger Chaussee 114, 24113 Kiel<br><small>REWE · ID 830930</small>');
+L.marker([54.3166309,10.1194301],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Kirchhofallee 66a, 24114 Kiel<br><small>REWE · ID 830857</small>');
+L.marker([54.3151313,10.1325376],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Familie Grützmacher</b><br>Sophienblatt 25-27, 24114 Kiel<br><small>REWE · ID 1356331</small>');
+L.marker([54.3087501,10.109262],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Moritz Breske oHG</b><br>Winterbeker Weg 44, 24114 Kiel<br><small>REWE · ID 565687</small>');
+L.marker([54.3323462,10.1156178],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Gutenbergstr. 77, 24116 Kiel<br><small>REWE · ID 561215</small>');
+L.marker([54.3252324,10.1184004],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Weißenburgstr. 15, 24116 Kiel<br><small>REWE · ID 561207</small>');
+L.marker([54.3111143,10.1446847],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Familie Borchers</b><br>Karlstal 27a, 24143 Kiel<br><small>REWE · ID 830851</small>');
+L.marker([54.294006,10.1832861],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Landskroner Weg 2, 24146 Kiel<br><small>REWE · ID 561245</small>');
+L.marker([54.3241789,10.1726903],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Schönberger Str. 133, 24148 Kiel<br><small>REWE · ID 561205</small>');
+L.marker([54.3356632,10.1900187],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Langer Rehm 22, 24149 Kiel<br><small>REWE · ID 830861</small>');
+L.marker([54.3949173,10.1753893],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>An der Schanze 40, 24159 Kiel<br><small>REWE · ID 561186</small>');
+L.marker([54.4171834,10.1703665],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt</b><br>Langenfelde 126a, 24159 Kiel<br><small>REWE · ID 561220</small>');
+L.marker([54.3717034,10.1355304],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Familie Preuß</b><br>Richthofenstr. 57, 24159 Kiel<br><small>REWE · ID 830872</small>');
+L.marker([54.3463398,10.1326289],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Simon Pflesser oHG</b><br>Projensdorfer Str. 148-150, 24106 Kiel<br><small>REWE · ID 540506</small>');
+L.marker([54.3374267,10.077323],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Familie Balke</b><br>Suchsdorfer Weg 7, 24119 Kronshagen<br><small>REWE · ID 561225</small>');
+L.marker([54.3128464,10.2010416],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Markt Schwentinental</b><br>Klingenbergstr. 64, 24222 Schwentinental<br><small>REWE · ID 830862</small>');
+L.marker([54.2831473,10.2384514],{icon:ic('#cc0000')}).addTo(map).bindPopup('<b>REWE Familie Schröder</b><br>Rönner Weg 2a, 24223 Schwentinental/Raisdorf<br><small>REWE · ID 210140</small>');
+L.marker([54.2901443,10.4305771],{icon:ic('#005ca9')}).addTo(map).bindPopup('<b>EDEKA Ley</b><br>Kieler Straße 2, 24238 Selent<br><small>EDEKA</small>');
+L.marker([54.2904,10.4312],{icon:ic('#00457c')}).addTo(map).bindPopup('<b>ALDI Nord</b><br>Kieler Straße 5, 24238 Selent-Karlshof<br><small>ALDI</small>');
+</script></body></html>
