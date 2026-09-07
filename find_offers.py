@@ -11,6 +11,8 @@ Quellen und wie genau sie werden:
   Getränke Hoffmann    Wochenangebote je REGION + Handzettel (scrapers/hoffmann.py)
   famila               Handzettel je REGION (Volltext)       (scrapers/famila.py)
   CITTI                Wochenangebote-PDF (ein Markt)        (scrapers/citti.py)
+  Kaufland             Wochenangebote als JSON, bundesweit    (scrapers/kaufland.py)
+  Markant              Handzettel-Volltext, bundesweit        (scrapers/markant.py)
   marktguru            Angebote kettenweit, alle Ketten      (offer_service.dart)
 """
 from __future__ import annotations
@@ -23,7 +25,7 @@ from concurrent.futures import ThreadPoolExecutor
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from scrapers import citti, edeka, famila, hoffmann  # noqa: E402
+from scrapers import citti, edeka, famila, hoffmann, kaufland, markant  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 EDEKA_CACHE = os.path.join(HERE, "edeka_markets.json")
@@ -82,7 +84,10 @@ def main() -> int:
     ap.add_argument("term", nargs="?", default="Bismarck")
     ap.add_argument("--zip", default="24238")
     ap.add_argument("--city", default="Kiel")
-    ap.add_argument("--chains", default="edeka,hoffmann,famila,citti")
+    ap.add_argument("--lat", type=float, default=54.3233)
+    ap.add_argument("--lng", type=float, default=10.1394)
+    ap.add_argument("--chains",
+                    default="edeka,hoffmann,famila,citti,kaufland,markant")
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
     want = {c.strip().lower() for c in a.chains.split(",")}
@@ -94,6 +99,17 @@ def main() -> int:
         results += hoffmann_hits(a.term, a.zip)
     if "famila" in want:
         results += famila_hits(a.term, a.city)
+    if "kaufland" in want:
+        store = kaufland.nearby_stores(a.lat, a.lng)
+        results += [o.as_dict() for o in kaufland.offers(store[0] if store else None)
+                    if a.term.lower() in (o.title + " " + o.unit).lower()]
+    if "markant" in want:
+        ms = markant.markets()
+        if ms:
+            results += [{"chain": "MARKANT", "scope": "Kette (Handzettel)",
+                         "price": h["price_estimate"], "per_liter": h["per_liter"],
+                         "deposit": h["deposit"], "text": h["text"]}
+                        for h in markant.find(ms[0]["url"], a.term)]
     if "citti" in want:
         results += [{"chain": "CITTI", "scope": "Markt", "store": "CITTI Kiel", **h}
                     for h in citti.find(a.term)]
@@ -102,7 +118,7 @@ def main() -> int:
         print(json.dumps(results, ensure_ascii=False, indent=1))
         return 0
     if not results:
-        print(f"'{a.term}': aktuell kein Angebot in EDEKA/Hoffmann/famila/CITTI.")
+        print(f"'{a.term}': aktuell kein Angebot in EDEKA/Hoffmann/famila/CITTI/Kaufland/Markant.")
         return 1
     for r in sorted(results, key=lambda x: (x.get("price") is None, x.get("price") or 0)):
         price = f"{r['price']:.2f} €" if r.get("price") else "  ?  "

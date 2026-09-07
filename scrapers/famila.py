@@ -16,10 +16,10 @@ Der Text ist so umbrochen wie im Layout, Preise stehen oft getrennt
 """
 from __future__ import annotations
 
-import json
 import re
 
-from .common import get, to_float
+from . import flipbook
+from .common import get
 
 BASE = "https://www.famila-nordost.de"
 MARKETS = BASE + "/wp-json/wp/v2/markt?per_page=100"
@@ -34,8 +34,7 @@ def markets(search: str = "") -> list[dict]:
 
 def leaflet_slug(market_url: str) -> str | None:
     """Handzettel-Slug (Region + KW) des Marktes, z. B. famila_kw37_West."""
-    m = re.search(r"handzettel/([A-Za-z0-9_\-]+)", get(market_url).text)
-    return m.group(1) if m else None
+    return flipbook.slug_from_page(market_url)
 
 
 def leaflet_text(slug: str) -> list[str]:
@@ -55,25 +54,4 @@ def leaflet_text(slug: str) -> list[str]:
 
 def find(slug: str, term: str, context: int = 400) -> list[dict]:
     """Alle Fundstellen eines Suchbegriffs mit Umfeld und geschaetztem Preis."""
-    hits = []
-    for page_no, page in enumerate(leaflet_text(slug), start=1):
-        for m in re.finditer(re.escape(term), page, re.I):
-            after = page[m.start(): m.start() + context]
-            seg = page[max(0, m.start() - context // 4): m.start() + context]
-            lit = re.search(r"1 Liter = ([0-9]+[.,][0-9]{2})", after)
-            dep = re.search(r"zzgl\.\s*([0-9]+[.,][0-9]{2})\s*€?\s*Pfand", after)
-            vol = re.search(r"(\d+)\s*(?:PET-Flaschen|Flaschen|x)\s*à?\s*([0-9,\.]+)\s*Liter", after)
-            price = None
-            if lit and vol:
-                per_l = to_float(lit.group(1))
-                litres = int(vol.group(1)) * (to_float(vol.group(2)) or 0)
-                if per_l and litres:
-                    price = round(per_l * litres, 2)
-            hits.append({
-                "page": page_no,
-                "text": " ".join(seg.split()),
-                "per_liter": to_float(lit.group(1)) if lit else None,
-                "deposit": to_float(dep.group(1)) if dep else None,
-                "price_estimate": price,
-            })
-    return hits
+    return flipbook.find(BASE, slug, term, context)

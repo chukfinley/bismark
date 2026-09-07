@@ -126,13 +126,45 @@ GET https://cittimarkt.de/angebote
 ```
 PDF mit Textebene (~167 kB Text, ~220 Preiszeilen). Ein Markt, keine Filial-Logik.
 
-### 8. Was **nicht** geht
+### 8. Kaufland — Wochenangebote als JSON ✅
+`www.kaufland.de` steht hinter einer Cloudflare-Challenge (auch headless
+Playwright bleibt bei „Just a moment…" hängen). **`filiale.kaufland.de` nicht** —
+dort liegt alles offen:
+
+```
+GET https://filiale.kaufland.de/angebote/uebersicht.html
+GET https://filiale.kaufland.de/.klstorefinder.json           (alle Filialen, DE)
+GET https://filiale.kaufland.de/.klstorebygeo.json?lat=&lng=  (nächste Filiale)
+```
+- Die Angebotsseite hat ~2.200 Angebots-Objekte als JSON im HTML:
+  `{offerId, dateFrom, dateTo, title, subtitle, price, discount, basePrice,
+  unit, detailDescription ("+ 0.25 Pfand"), formattedOldPrice}` →
+  **1.190 eindeutige Angebote** mit Preis, Streichpreis, Rabatt-%, Literpreis.
+- Filialwahl ändert die Seite nicht → Angebote sind bundesweit, Zuordnung über
+  die nächste Filiale (Kiel Skandinaviendamm, Schwentinental, Rendsburg,
+  Bad Segeberg).
+
+### 9. Markant — Handzettel-Volltext ✅
+`markant-markt.de` gibt es nicht mehr (NXDOMAIN) — die Kette liegt auf
+**markant-online.de** und benutzt exakt denselben Bela-Aufbau wie famila:
+
+```
+GET https://www.markant-online.de/marktauswahl/   -> 33 Märkte
+GET https://www.markant-online.de/markt/<slug>/   -> /handzettel/Markant_kw37_Basis/
+GET /handzettel/<slug>/files/search/book_config.js -> Volltext aller Seiten
+```
+Serverseitig gerendert, kein Browser nötig. Alle Märkte teilen `…_Basis`
+(+ regionale `Mittagstisch`-Varianten) → Scope ist die Kette, nicht die Filiale.
+
+### 10. Was **nicht** geht
 | Kette | Läden ≤50 km | Status |
 |-------|--------------|--------|
-| Kaufland | 4 | **blockiert** — Cloudflare-Challenge („Just a moment…"), auch im headless Playwright. Nur mit echtem, headed Browser oder Stealth-Setup. |
-| Markant | 11 | **keine Quelle** — `markant-markt.de` gibt es nicht mehr (NXDOMAIN), Bela-Gruppe stellt für Markant nichts online. |
-| Nahkauf | 5 | Angebote nur per WhatsApp-Handzettel, keine Website-Angebote. |
+| Nahkauf | 5 | **keine Quelle** — REWE hat den Handzettel zum 01.07. eingestellt, Angebote laufen nur noch über WhatsApp. Sitemap kennt keine Markt- oder Angebotsseiten. |
 | Lidl, Aldi | — | führen das Produkt nicht. |
+
+**Lehre (wie schon bei REWE):** wenn ein Host dichtmacht, ist meist ein anderer
+Host derselben Kette offen. `www.kaufland.de` → Cloudflare, `filiale.kaufland.de`
+→ offen. `markant-markt.de` → tot, `markant-online.de` → alles da.
 
 ---
 
@@ -149,8 +181,10 @@ CITTI · Nahkauf · Schlemmer · E-aktiv · Frischemarkt.
 | Getränke Hoffmann | nur Wochenangebote (Highlights + ganzer Handzettel) | Region | `scrapers/hoffmann.py` |
 | famila | nur Wochenangebote (ganzer Handzettel) | Region | `scrapers/famila.py` |
 | CITTI | nur Wochenangebote | der eine Markt | `scrapers/citti.py` |
-| alle Ketten inkl. Netto, Kaufland … | nur wenn reduziert | Kette | marktguru-API (`zipCode`) |
-| Kaufland, Markant, Nahkauf | — | — | siehe „Was nicht geht" |
+| Kaufland | nur Wochenangebote | Kette (4 Filialen zugeordnet) | `scrapers/kaufland.py` |
+| Markant | nur Wochenangebote (Handzettel) | Kette | `scrapers/markant.py` |
+| alle Ketten inkl. Netto … | nur wenn reduziert | Kette | marktguru-API (`zipCode`) |
+| Nahkauf | — | — | siehe „Was nicht geht" |
 | Lidl, Aldi | — | — | führen das Produkt nicht |
 
 ---
@@ -190,7 +224,8 @@ Rückgeld (nicht aufaddiert). Reduziert = durchgestrichener Regulärpreis.
   (`./find_offers.py Bismarck`, `--zip 24103`, `--chains edeka,hoffmann`, `--json`).
 - `build_edeka_cache.py` — baut/aktualisiert `edeka_markets.json` (PLZ → interne
   EDEKA-Markt-ID). Läuft ein paar Minuten, danach ist die Suche schnell.
-- `scrapers/` — je Kette ein Modul (`edeka`, `hoffmann`, `famila`, `citti`) mit
+- `scrapers/` — je Kette ein Modul (`edeka`, `hoffmann`, `famila`, `citti`,
+  `kaufland`, `markant`; `flipbook` teilen sich famila und Markant) mit
   gemeinsamer `Offer`-Struktur. Braucht `curl_cffi` (TLS-Fingerprint) und für die
   PDFs `pdftotext` (poppler-utils).
 - `bismark.py` — REWE-Preise über die hartkodierte Marktliste, markiert reduziert &
@@ -219,5 +254,6 @@ Rückgeld (nicht aufaddiert). Reduziert = durchgestrichener Regulärpreis.
   Bug.
 - EDEKA-Angebotsseiten liefern das Sortiment **je Markt verschieden** — kettenweite
   Angaben sind zu grob.
-- Kaufland ist per Cloudflare dicht (auch headless Playwright), Markant hat gar keine
-  Website mehr, Nahkauf schickt Angebote nur per WhatsApp.
+- Nur `www.kaufland.de` ist per Cloudflare dicht — `filiale.kaufland.de` liefert alle
+  Angebote als JSON. Markant liegt nicht auf `markant-markt.de` (tot), sondern auf
+  `markant-online.de`. Nahkauf schickt Angebote nur noch per WhatsApp.
