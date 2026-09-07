@@ -68,17 +68,90 @@ GET https://stores.fuerstbismarckquelle.de/wp-admin/admin-ajax.php?action=asl_lo
 
 ---
 
+### 4. EDEKA — Wochenangebote **pro Filiale** ✅
+Kein Regalpreis (EDEKA veröffentlicht keinen), aber der komplette Handzettel jedes
+einzelnen Marktes als HTML — feiner als marktguru, das nur kettenweit weiß.
+
+```
+GET https://www.edeka.de/api/marketsearch/markets?searchstring=<PLZ|Ort>   (JSON)
+GET <market.url>                       -> nennt die interne ID: /maerkte/<id>/
+GET https://www.edeka.de/maerkte/<id>/angebote/                            (HTML)
+```
+- Marktsuche liefert **immer max. 10** Treffer, `limit`/`offset` werden ignoriert →
+  pro PLZ einmal suchen (86 PLZ aus `markets.json` → **114 Märkte**, gecacht in
+  `edeka_markets.json`).
+- Angebotsseite: ~150–190 Angebote je Markt, je Karte Name, Preis,
+  „Festpreis/Rabattierter Preis von X€ (-Y% Rabatt)", Gebinde + Pfand + Literpreis.
+- Die Sortimente unterscheiden sich real je Markt (Vergleich zweier Märkte: 184 vs. 12
+  Angebote, 5 gemeinsam) — kettenweite Angaben sind also zu grob.
+- **Akamai**: normale Python-Clients bekommen 403. `curl_cffi` mit Chrome-Fingerprint
+  kommt durch (`impersonate="chrome"`). Der Endpunkt `/api/offers?marketId=…` ist
+  gesperrt („haha! better luck next time"), die HTML-Seite nicht.
+
+### 5. Getränke Hoffmann — Angebote **pro Region** + kompletter Handzettel ✅
+```
+GET  /angebote                 -> form_build_id
+POST /angebote  plz=<PLZ>&form_id=choose_branch_form&form_build_id=…
+```
+- Danach hält das Session-Cookie die Region; die Seite listet die ~15
+  Highlight-Angebote sauber im HTML (Marke, Preis, Gebinde, Pfand, Literpreis,
+  Gültigkeit).
+- Auf derselben Seite steht `var flipbookPdf = '/sites/default/files/…KW37….pdf'` —
+  der **komplette Handzettel**, PDF **mit Textebene** (`pdftotext -layout`), also alle
+  Angebote der Woche statt nur der Highlights. Das PDF ist regionsabhängig
+  (`1-1_HZ_GH1-1…` ohne Region, `2-1_HZ_GH2-1…` für 24238).
+- Feiner als Region geht nicht — Filialpreise gibt es online nicht.
+
+### 6. famila Nordost — Handzettel **pro Region** als Volltext ✅
+```
+GET /wp-json/wp/v2/markt?per_page=100&search=Kiel     (WordPress-REST, offen)
+GET <markt-url>            -> /handzettel/famila_kw<KW>_<Region>/
+GET /handzettel/<slug>/files/search/book_config.js    -> var textForPages = [...]
+```
+- `book_config.js` ist der Suchindex des FlipHTML5-Prospekts und enthält den
+  **kompletten Text aller Seiten**. Alle Kieler famila teilen die Region `West`.
+- Preise stehen im Layout getrennt („5.\n52"), darum Preis aus **Literpreis ×
+  Gebinde** rechnen (zuverlässiger als die Ziffern-Fragmente).
+- Live-Beispiel KW37: *Fürst Bismarck Mineralwasser, 12 PET-Flaschen à 1 l,
+  1 l = 0,46 € → 5,52 € + 4,50 € Pfand.* Genau dieses Angebot fehlt der App bisher,
+  weil marktguru zeitgleich **0 Treffer** für „Fürst Bismarck" liefert.
+- Die ACF-Felder der REST-API sind leer, `handzettel`-Seiten rendern per JS — der
+  Weg über `book_config.js` ist der einzige ohne Browser.
+
+### 7. CITTI Markt (Kiel Mühlendamm) — Wochenangebote als PDF ✅
+```
+GET https://cittimarkt.de/angebote
+-> …/redaktion/werbung/catalogs/wochenangebote_<KW>/pdf/complete.pdf   (+ Wein-,
+   Profi-, Genuss-, Vorteilsheft-Kataloge)
+```
+PDF mit Textebene (~167 kB Text, ~220 Preiszeilen). Ein Markt, keine Filial-Logik.
+
+### 8. Was **nicht** geht
+| Kette | Läden ≤50 km | Status |
+|-------|--------------|--------|
+| Kaufland | 4 | **blockiert** — Cloudflare-Challenge („Just a moment…"), auch im headless Playwright. Nur mit echtem, headed Browser oder Stealth-Setup. |
+| Markant | 11 | **keine Quelle** — `markant-markt.de` gibt es nicht mehr (NXDOMAIN), Bela-Gruppe stellt für Markant nichts online. |
+| Nahkauf | 5 | Angebote nur per WhatsApp-Handzettel, keine Website-Angebote. |
+| Lidl, Aldi | — | führen das Produkt nicht. |
+
+---
+
 ## Wer führt das Wasser (≤ 50 km Kiel)
 
 REWE 56 · EDEKA 66 · Getränke Hoffmann 19 · famila 18 · Markant 11 · Kaufland 4 ·
 CITTI · Nahkauf · Schlemmer · E-aktiv · Frischemarkt.
 **Lidl & Aldi führen es nicht** (im Browser geprüft — Eigenmarken).
 
-| Kette | Online-Preis | Quelle |
-|-------|--------------|--------|
-| REWE | Alltags- **und** Angebotspreis je Filiale | REWE-API (`wwIdent`) |
-| Edeka, Kaufland, famila, Netto, Getränke Hoffmann, Markant … | nur **wenn reduziert** (Wochenangebot) | marktguru-API (`zipCode`) |
-| Lidl, Aldi | — | führen das Produkt nicht |
+| Kette | Was online steht | Genauigkeit | Quelle |
+|-------|------------------|-------------|--------|
+| REWE | Alltags- **und** Angebotspreis | **Filiale** | REWE-API (`wwIdent`) |
+| EDEKA | nur Wochenangebote | **Filiale** | `scrapers/edeka.py` |
+| Getränke Hoffmann | nur Wochenangebote (Highlights + ganzer Handzettel) | Region | `scrapers/hoffmann.py` |
+| famila | nur Wochenangebote (ganzer Handzettel) | Region | `scrapers/famila.py` |
+| CITTI | nur Wochenangebote | der eine Markt | `scrapers/citti.py` |
+| alle Ketten inkl. Netto, Kaufland … | nur wenn reduziert | Kette | marktguru-API (`zipCode`) |
+| Kaufland, Markant, Nahkauf | — | — | siehe „Was nicht geht" |
+| Lidl, Aldi | — | — | führen das Produkt nicht |
 
 ---
 
@@ -113,6 +186,13 @@ Rückgeld (nicht aufaddiert). Reduziert = durchgestrichener Regulärpreis.
 
 ## CLI-Tools (Python, Recherche/Debug)
 
+- `find_offers.py` — **ein Produkt in allen Quellen suchen**
+  (`./find_offers.py Bismarck`, `--zip 24103`, `--chains edeka,hoffmann`, `--json`).
+- `build_edeka_cache.py` — baut/aktualisiert `edeka_markets.json` (PLZ → interne
+  EDEKA-Markt-ID). Läuft ein paar Minuten, danach ist die Suche schnell.
+- `scrapers/` — je Kette ein Modul (`edeka`, `hoffmann`, `famila`, `citti`) mit
+  gemeinsamer `Offer`-Struktur. Braucht `curl_cffi` (TLS-Fingerprint) und für die
+  PDFs `pdftotext` (poppler-utils).
 - `bismark.py` — REWE-Preise über die hartkodierte Marktliste, markiert reduziert &
   günstigsten (`--json`, `--only-reduced`).
 - `rewe_scraper.py` — generischer Playwright-Fallback (beliebiges Produkt/Stadt).
@@ -130,3 +210,14 @@ Rückgeld (nicht aufaddiert). Reduziert = durchgestrichener Regulärpreis.
 - Aktuell 21 von 56 REWE mit Live-Preis (nur die mit bekanntem `wwIdent`). Rest nur
   auf der Karte. To-do: fehlende `wwIdent` nachtragen.
 - marktguru-Angebote sind **kettenweit**, nicht pro Filiale.
+- **marktguru liefert nicht immer etwas**: am 07.09.2026 waren es **0 Treffer** für
+  „Fürst Bismarck" um 24238 — die App zeigte also gar kein Nicht-REWE-Angebot,
+  obwohl famila das Wasser zeitgleich für 5,52 € (12×1 l PET) im Prospekt hatte.
+  Darum die Direkt-Scraper je Kette.
+- EDEKA/Hoffmann/famila/CITTI liefern **nur Angebote, nie Regalpreise**. Wer dort das
+  Wasser zum Normalpreis sucht, sieht nichts — das ist eine Grenze der Quellen, kein
+  Bug.
+- EDEKA-Angebotsseiten liefern das Sortiment **je Markt verschieden** — kettenweite
+  Angaben sind zu grob.
+- Kaufland ist per Cloudflare dicht (auch headless Playwright), Markant hat gar keine
+  Website mehr, Nahkauf schickt Angebote nur per WhatsApp.
