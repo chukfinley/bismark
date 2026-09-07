@@ -27,6 +27,19 @@ GET https://www.rewe.de/api/stationary-product-search/products
 - Produkt per `id == "8016195"` rausfiltern. Fehlt es → nicht im Sortiment des Markts.
 - Liefert **Alltags- UND Angebotspreis** je Filiale. Einzige Quelle mit Regalpreis.
 
+**Alle `wwIdent` bekommt man aus der Sitemap** — der Marktwähler ist zwar
+Cloudflare-geschützt, die Sitemap nicht:
+
+```
+https://www.rewe.de/robots.txt          -> Sitemap: /sitemaps/sitemap.xml
+https://www.rewe.de/sitemaps/sitemap-maerkte.xml
+-> 4.212 URLs:  /marktseite/<ort>/<wwIdent>/rewe-markt-<strasse>-<hausnr>/
+```
+Damit lassen sich die IDs über die Adresse zuordnen (`build_rewe_idents.py`):
+**55 von 56** REWE rund um Kiel liefern jetzt einen Regalpreis (vorher 21).
+Nahkauf-Märkte stehen ebenfalls mit ID in der Sitemap, die Preis-API antwortet
+für sie aber **404** — sie bedient nur REWE-Filialen.
+
 > Achtung: Die **Produkt-Seite** `rewe.de/produkte/...` und der Marktwähler sind
 > Cloudflare-/WAF-geschützt (Turnstile) — nur mit echtem (headed) Browser passierbar.
 > Die `stationary-product-search`-API ist es **nicht**. Darum nutzen wir nur die API.
@@ -189,6 +202,38 @@ CITTI · Nahkauf · Schlemmer · E-aktiv · Frischemarkt.
 
 ---
 
+## „Steht im Händlerverzeichnis" heißt nicht „Preis online"
+
+Das sind zwei verschiedene Dinge, und nur eines davon kann eine App lesen:
+
+1. **Führt der Laden das Wasser?** Das sagt die Händlerliste des Herstellers —
+   eine gepflegte Liste, kein Live-Bestand. Sie sagt nichts über Preis,
+   Verfügbarkeit oder ob der Laden es noch führt.
+2. **Steht der Preis irgendwo öffentlich?** Das macht in Deutschland fast
+   niemand. Der Regalpreis einer Filiale ist kein veröffentlichtes Datum.
+
+Deshalb gilt: **nur REWE veröffentlicht Regalpreise pro Filiale** (die
+`stationary-product-search`-API der Marktseite). Alle anderen Ketten stellen
+online **ausschließlich den Wochenprospekt** ein:
+
+| Kette | Was online steht | Regalpreis online? |
+|-------|------------------|--------------------|
+| REWE | Artikel mit `current`/`regular`/`refund` je `wwIdent` | **ja** |
+| EDEKA | Sortimentssuche ohne Preise, dazu Angebote je Filiale | nein (geprüft: 0 € auf der Sortimentsseite) |
+| Getränke Hoffmann | 15 Highlight-Angebote + Handzettel-PDF | nein |
+| famila / Markant | nur Handzettel | nein |
+| Kaufland | ~1.190 Angebots-Objekte, alles Aktionen | nein |
+| CITTI | Werbe-PDFs | nein |
+
+Der einzige Getränke-Onlineshop der Kette, *HoffmannBringts*, liefert nur in
+Berlin, Brandenburg und Bielefeld — für Kiel bringt er nichts.
+
+**Folge:** Ein Laden aus der Händlerliste ohne Preis in der App heißt „führt das
+Wasser vermutlich, verrät den Preis aber nicht". Er taucht auf, sobald das
+Produkt im Wochenprospekt steht. Bei REWE steht der Preis immer.
+
+---
+
 ## Zielprodukt — und nur das
 
 **Fürst Bismarck Mineralwasser Still, Kasten 12 × 0,75 l Glas** (Pfand 3,30 €).
@@ -264,6 +309,9 @@ Rückgeld (nicht aufaddiert). Reduziert = durchgestrichener Regulärpreis.
 - `bismark_app/tool/` — Dart-Prüfskripte: `probe.dart` (welche Quelle antwortet
   Dart überhaupt?), `check_chains.dart` (Ketten-Services live), `check_deals.dart`
   (Deal-Liste Ende-zu-Ende), `rewe_prices.dart` (REWE-Preisverteilung).
+- `build_rewe_idents.py` — zieht fehlende REWE-`wwIdent` aus der Sitemap
+  (`rewe_idents.json`), `gen_markets_dart.py` schreibt `markets.json` nach
+  `bismark_app/lib/markets.dart`.
 - `find_offers.py` filtert standardmäßig auf das Zielprodukt; `--loose` zeigt
   jeden Treffer zum Suchwort.
 - `bismark.py` — REWE-Preise über die hartkodierte Marktliste, markiert reduziert &
@@ -280,8 +328,11 @@ Rückgeld (nicht aufaddiert). Reduziert = durchgestrichener Regulärpreis.
   5,49-€-Märkten (Preis schlägt Nähe).
 - REWE-Angebot erkennen wir sofort (`current<regular`); Edeka & Co. nur, wenn das
   Wasser **im Wochenprospekt** steht (Regalpreis steht online nicht).
-- Aktuell 21 von 56 REWE mit Live-Preis (nur die mit bekanntem `wwIdent`). Rest nur
-  auf der Karte. To-do: fehlende `wwIdent` nachtragen.
+- 55 von 56 REWE liefern einen Live-Regalpreis (IDs aus der Sitemap). Der eine
+  Rest, Kakabellenweg 11-13 in Eckernförde, steht nicht in der REWE-Sitemap.
+- Die Sitemap kommt über `curl_cffi` gelegentlich falsch dekodiert an (kein
+  einziges `<loc>` im Text). `build_rewe_idents.py` erzwingt darum `gzip` und
+  versucht es notfalls erneut.
 - marktguru-Angebote sind **kettenweit**, nicht pro Filiale.
 - **marktguru liefert nicht immer etwas**: am 07.09.2026 waren es **0 Treffer** für
   „Fürst Bismarck" um 24238 — die App zeigte also gar kein Nicht-REWE-Angebot,
