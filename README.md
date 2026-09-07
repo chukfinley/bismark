@@ -189,6 +189,29 @@ CITTI · Nahkauf · Schlemmer · E-aktiv · Frischemarkt.
 
 ---
 
+## Zielprodukt — und nur das
+
+**Fürst Bismarck Mineralwasser Still, Kasten 12 × 0,75 l Glas** (Pfand 3,30 €).
+Anderes Wasser zählt nicht — auch **kein** Fürst Bismarck in anderem Gebinde
+(z. B. 12 × 1 l PET). Die Prüfung steckt doppelt und wortgleich in
+`bismark_app/lib/target.dart` (App) und `scrapers/target.py` (CLI):
+
+1. Marke — Text enthält „Bismarck".
+2. Gebinde — „0,75" (oder 0.75 / 750 ml) **und** ein 12er-Kasten; „PET"/„Einweg"
+   schließt aus.
+3. Sorte — „Still" ausdrücklich, oder ein Sammelangebot, das Still einschließt
+   („Classic, Medium oder Still", „versch. Sorten").
+
+Beispiele:
+
+| Angebotstext | zählt |
+|---|---|
+| Fürst Bismarck Classic, Medium oder Still 12 × 0,75 l Glas + Pfand 3,30 € | ja |
+| Fürst Bismarck Mineralwasser versch. Sorten 12 PET-Flaschen à 1 Liter | nein (PET, 1 l) |
+| Hella Mineralwasser versch. Sorten 12 × 1 L | nein (falsche Marke) |
+
+---
+
 ## App (Flutter, Android) — `bismark_app/`
 
 Eine zentrale, **nach Preis sortierte** Liste aus beiden Quellen (günstigster oben,
@@ -196,9 +219,19 @@ egal woher). Bei **gleichem Preis** kommt der **nächstgelegene** Markt oben
 (Entfernung aus GPS oder aus der eingegebenen PLZ; Default-PLZ **24238**, Selent).
 
 - `price_service.dart` — REWE-Live-Preise (parallel über alle bekannten `wwIdent`).
+- `target.dart` — der Zielprodukt-Filter (siehe oben). Greift für **alle** Quellen,
+  auch für marktguru.
+- `chain_offer_service.dart` — holt Angebote direkt bei den Ketten, ohne Backend:
+  famila und Markant über den Handzettel-Volltext (`book_config.js`), Getränke
+  Hoffmann über das PLZ-Formular, Kaufland über das JSON in der Angebotsseite.
+  **EDEKA fehlt hier**: `www.edeka.de` wirft Darts TLS-Fingerprint mit 403 raus
+  (nachgeprüft mit `bismark_app/tool/probe.dart`), dort bleibt marktguru zuständig.
+  Der Python-Scraper kommt per `curl_cffi` durch — für EDEKA je Filiale also CLI.
 - `offer_service.dart` — marktguru-Angebote für die PLZ.
-- `deal.dart` — vereint beides zu `Deal`s, ordnet Ketten-Angebote dem nächsten
-  Markt zu, sortiert Preis → Nähe.
+- `deal.dart` — vereint alles zu `Deal`s und sortiert Preis → Nähe. Ein
+  Ketten-/Regionsangebot bekommt **eine Zeile pro Filiale dieser Kette**, damit
+  jeder Laden seinen eigenen Preis, seine Entfernung und seinen Maps-Tap hat
+  (vorher landete es nur beim nächstgelegenen Markt).
 - `markets.dart` — 200 Läden (autogeneriert aus `markets.json`); 21 REWE mit `wwIdent`
   = Live-Preis.
 - `maps_util.dart` — öffnet `geo:` direkt in der Standard-Karten-App (kein
@@ -228,6 +261,11 @@ Rückgeld (nicht aufaddiert). Reduziert = durchgestrichener Regulärpreis.
   `kaufland`, `markant`; `flipbook` teilen sich famila und Markant) mit
   gemeinsamer `Offer`-Struktur. Braucht `curl_cffi` (TLS-Fingerprint) und für die
   PDFs `pdftotext` (poppler-utils).
+- `bismark_app/tool/` — Dart-Prüfskripte: `probe.dart` (welche Quelle antwortet
+  Dart überhaupt?), `check_chains.dart` (Ketten-Services live), `check_deals.dart`
+  (Deal-Liste Ende-zu-Ende), `rewe_prices.dart` (REWE-Preisverteilung).
+- `find_offers.py` filtert standardmäßig auf das Zielprodukt; `--loose` zeigt
+  jeden Treffer zum Suchwort.
 - `bismark.py` — REWE-Preise über die hartkodierte Marktliste, markiert reduziert &
   günstigsten (`--json`, `--only-reduced`).
 - `rewe_scraper.py` — generischer Playwright-Fallback (beliebiges Produkt/Stadt).

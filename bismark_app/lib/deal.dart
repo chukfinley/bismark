@@ -6,6 +6,7 @@ import 'dart:math' as math;
 
 import 'models.dart';
 import 'markets.dart';
+import 'target.dart';
 
 enum DealSource { reweLive, weeklyOffer }
 
@@ -88,11 +89,22 @@ Market? nearestStore(String code, double refLat, double refLon) {
   return best;
 }
 
+/// Pfand aus einem Angebotstext - die Ketten schreiben es unterschiedlich:
+/// "Pfand 3,30 €", "+ Pfand 3,30 €", "zzgl. 3.30 € Pfand", "(+ 3.30 Pfand)".
 double? _parsePfand(String desc) {
-  final m = RegExp(r'Pfand\s*([\d.,]+)').firstMatch(desc);
+  final m = RegExp(r'Pfand[^0-9]{0,6}([0-9]+[.,][0-9]{2})'
+          r'|([0-9]+[.,][0-9]{2})\s*(?:€|EUR)?\s*Pfand')
+      .firstMatch(desc);
   if (m == null) return null;
-  return double.tryParse(m.group(1)!.replaceAll(',', '.'));
+  return double.tryParse((m.group(1) ?? m.group(2))!.replaceAll(',', '.'));
 }
+
+/// Alle Läden einer Kette (EDEKA schließt die Frischemärkte ein).
+List<Market> storesOfChain(String code) => kMarkets
+    .where((m) =>
+        m.retailer == code ||
+        (code == 'EDEKA' && m.retailer == 'FRISCHEMARKT'))
+    .toList();
 
 /// Referenzpunkt für Entfernung aus der PLZ: Schwerpunkt aller Märkte mit
 /// dieser PLZ in der Adresse; sonst Kiel-Zentrum.
@@ -133,26 +145,49 @@ List<Deal> buildDeals(
     ));
   }
 
+  // Ketten-/Regionsangebote gelten für JEDE Filiale dieser Kette in der Nähe -
+  // darum bekommt jeder Laden seine eigene Zeile mit demselben Preis. So sieht
+  // man beim Antippen sofort, was der konkrete Markt kostet.
   final seen = <String>{};
   for (final c in chainOffers) {
     final code = chainCode(c.chain);
-    if (code == 'REWE') continue; // REWE haben wir schon live
-    final key = '$code|${c.price}|${c.description}';
-    if (!seen.add(key)) continue;
-    final store = nearestStore(code, refLat, refLon);
-    deals.add(Deal(
-      retailer: code,
-      title: store?.name ?? c.chain,
-      address: store?.address,
-      lat: store?.lat,
-      lon: store?.lon,
-      price: c.price,
-      pfand: _parsePfand(c.description) ?? 3.30,
-      strike: c.oldPrice,
-      source: DealSource.weeklyOffer,
-      offerDesc: c.description,
-      validTo: c.validTo,
-    ));
+    if (code == 'REWE') continue; // REWE haben wir live pro Filiale
+    // Nur das Zielprodukt: Fürst Bismarck Still, Kasten 12 x 0,75 l Glas.
+    if (!matchTarget('${c.chain} ${c.description}').isTarget) continue;
+    if (!seen.add('$code|${c.price}|${c.description}')) continue;
+    final pfand = _parsePfand(c.description) ?? 3.30;
+    final stores = storesOfChain(code);
+    if (stores.isEmpty) {
+      deals.add(Deal(
+        retailer: code,
+        title: c.chain,
+        address: null,
+        lat: null,
+        lon: null,
+        price: c.price,
+        pfand: pfand,
+        strike: c.oldPrice,
+        source: DealSource.weeklyOffer,
+        offerDesc: c.description,
+        validTo: c.validTo,
+      ));
+      continue;
+    }
+    for (final store in stores) {
+      deals.add(Deal(
+        retailer: code,
+        title: store.name,
+        address: store.address,
+        lat: store.lat,
+        lon: store.lon,
+        price: c.price,
+        pfand: pfand,
+        strike: c.oldPrice,
+        source: DealSource.weeklyOffer,
+        offerDesc: c.description,
+        validTo: c.validTo,
+      ));
+    }
   }
 
   for (final d in deals) {

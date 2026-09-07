@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 
 import 'models.dart';
 import 'markets.dart';
+import 'chain_offer_service.dart';
 import 'deal.dart';
 import 'price_service.dart';
 import 'offer_service.dart';
@@ -62,9 +63,13 @@ class _HomePageState extends State<HomePage> {
     final res = await Future.wait([
       _priceService.fetchAll(),
       _offerService.fetch(_zip),
+      fetchAllChainOffers(_zip),
     ]);
     _rewe = res[0] as List<Offer>;
-    _chain = res[1] as List<ChainOffer>;
+    _chain = [
+      ...res[1] as List<ChainOffer>,
+      ...res[2] as List<ChainOffer>,
+    ];
     _rebuild();
     if (mounted) setState(() => _loading = false);
   }
@@ -72,7 +77,11 @@ class _HomePageState extends State<HomePage> {
   /// Nur Angebote (marktguru) neu laden – z.B. nach PLZ-Änderung.
   Future<void> _reloadOffers() async {
     setState(() => _loading = true);
-    _chain = await _offerService.fetch(_zip);
+    final res = await Future.wait([
+      _offerService.fetch(_zip),
+      fetchAllChainOffers(_zip),
+    ]);
+    _chain = [...res[0], ...res[1]];
     _rebuild();
     if (mounted) setState(() => _loading = false);
   }

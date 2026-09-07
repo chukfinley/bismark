@@ -26,6 +26,7 @@ from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from scrapers import citti, edeka, famila, hoffmann, kaufland, markant  # noqa: E402
+from scrapers.target import is_target  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 EDEKA_CACHE = os.path.join(HERE, "edeka_markets.json")
@@ -89,6 +90,8 @@ def main() -> int:
     ap.add_argument("--chains",
                     default="edeka,hoffmann,famila,citti,kaufland,markant")
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--loose", action="store_true",
+                    help="ohne Zielprodukt-Filter (jeder Treffer zum Suchwort)")
     a = ap.parse_args()
     want = {c.strip().lower() for c in a.chains.split(",")}
 
@@ -113,6 +116,12 @@ def main() -> int:
     if "citti" in want:
         results += [{"chain": "CITTI", "scope": "Markt", "store": "CITTI Kiel", **h}
                     for h in citti.find(a.term)]
+
+    if not a.loose:
+        # Nur Fürst Bismarck Still, Kasten 12 x 0,75 l Glas.
+        results = [r for r in results
+                   if is_target(" ".join(str(r.get(k, "")) for k in
+                                         ("chain", "title", "unit", "text")))]
 
     if a.json:
         print(json.dumps(results, ensure_ascii=False, indent=1))

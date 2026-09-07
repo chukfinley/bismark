@@ -55,9 +55,15 @@ class OfferService {
       }
       // Abgelaufene Angebote nicht anzeigen.
       if (to != null && to.isBefore(DateTime.now())) continue;
+      // Marke + Produktname mit in die Beschreibung: marktguru packt sie in
+      // eigene Felder, der Zielprodukt-Filter braucht sie aber im Text.
+      final brand = '${(o['brand'] as Map?)?['name'] ?? ''}';
+      final product = '${(o['product'] as Map?)?['name'] ?? ''}';
       offers.add(ChainOffer(
         chain: chain,
-        description: '${o['description'] ?? ''}',
+        description: [brand, product, '${o['description'] ?? ''}']
+            .where((e) => e.trim().isNotEmpty)
+            .join(' '),
         price: (o['price'] as num).toDouble(),
         oldPrice: (o['oldPrice'] as num?)?.toDouble(),
         perLiter: (o['referencePrice'] as num?)?.toDouble(),
