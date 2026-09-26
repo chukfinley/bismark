@@ -41,7 +41,7 @@ double? _priceFromLiter(String text) {
   // Erst das Gebinde ("12 Flaschen à 0,75 Liter"), dann den Literpreis, der
   // DANACH steht - sonst greift man den Preis des nächsten Angebots ab.
   final vol = RegExp(
-          r'(\d+)\s*(?:PET-Flaschen|Flaschen|x)\s*à?\s*([0-9]+(?:[,.][0-9]+)?)\s*Liter')
+          r'(\d+)\s*(?:PET-Flaschen|Glasflaschen|Flaschen|x)\s*à?\s*([0-9]+(?:[,.][0-9]+)?)\s*Liter')
       .firstMatch(text);
   if (vol == null) return null;
   final liter = RegExp(r'1\s*Liter\s*=\s*([0-9]+[.,][0-9]{2})')
@@ -52,6 +52,18 @@ double? _priceFromLiter(String text) {
   final size = _num(vol.group(2));
   if (perL == null || count == null || size == null) return null;
   return double.parse((perL * count * size).toStringAsFixed(2));
+}
+
+/// Echter Preis direkt vor dem Produktnamen ("8,88 4,44 Fürst Bismarck …").
+/// Gilt nur, wenn er zum Literpreis passt - sonst ist es das Nachbarangebot.
+double? _exactPriceBefore(String before, double estimate, double litres) {
+  final m = RegExp(r'(\d+,\d{2})\s+(?:[^\s\d]+\s+)?$').firstMatch(before);
+  final exact = _num(m?.group(1));
+  // Literpreis ist auf Cent gerundet: Abweichung <= 0,005 € je Liter
+  if (exact == null || (exact - estimate).abs() > 0.005 * litres + 0.01) {
+    return null;
+  }
+  return exact;
 }
 
 Future<String?> _get(String url) async {
@@ -95,8 +107,17 @@ Future<List<ChainOffer>> _leafletOffers({
           hit.start, hit.start + 400 > text.length ? text.length : hit.start + 400);
       final desc = seg.replaceAll(RegExp(r'\s+'), ' ');
       if (!accept(desc)) continue;
-      final price = _priceFromLiter(seg);
-      if (price == null) continue;
+      final estimate = _priceFromLiter(seg);
+      if (estimate == null) continue;
+      final perL = _num(RegExp(r'1\s*Liter\s*=\s*([0-9]+[.,][0-9]{2})')
+          .firstMatch(seg)
+          ?.group(1));
+      final before =
+          text.substring(hit.start - 40 < 0 ? 0 : hit.start - 40, hit.start);
+      final price = (perL != null && perL > 0
+              ? _exactPriceBefore(before, estimate, estimate / perL)
+              : null) ??
+          estimate;
       out.add(ChainOffer(
         chain: chain,
         description: desc.length > 160 ? desc.substring(0, 160) : desc,

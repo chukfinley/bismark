@@ -19,7 +19,11 @@ from .common import get, to_float
 _PAGES = re.compile(r"var textForPages\s*=\s*(\[.*\])\s*;?\s*$", re.S)
 _LITER = re.compile(r"1 Liter\s*=\s*([0-9]+[.,][0-9]{2})")
 _DEPOSIT = re.compile(r"zzgl\.\s*([0-9]+[.,][0-9]{2})\s*€?\s*Pfand")
-_VOLUME = re.compile(r"(\d+)\s*(?:PET-Flaschen|Flaschen|x)\s*à?\s*([0-9,\.]+)\s*Liter")
+_VOLUME = re.compile(
+    r"(\d+)\s*(?:PET-Flaschen|Glasflaschen|Flaschen|x)\s*à?\s*([0-9,\.]+)\s*Liter")
+# Preis direkt vor dem Produktnamen ("8,88 4,44 Fürst Bismarck …"), nur wenn
+# er zum Literpreis passt - sonst ist es die Zahl des Nachbarangebots.
+_PRICE_BEFORE = re.compile(r"(\d+,\d{2})\s+(?:[^\s\d]+\s+)?$")
 
 
 def slug_from_page(url: str) -> str | None:
@@ -59,6 +63,11 @@ def find(base: str, slug: str, term: str, context: int = 400) -> list[dict]:
                 litres = int(vol.group(1)) * (to_float(vol.group(2)) or 0)
                 if per_l and litres:
                     price = round(per_l * litres, 2)
+                    before = _PRICE_BEFORE.search(page[max(0, m.start() - 40): m.start()])
+                    exact = to_float(before.group(1)) if before else None
+                    # Literpreis ist auf Cent gerundet: Abweichung <= 0,005 € je Liter
+                    if exact and abs(exact - price) <= 0.005 * litres + 0.01:
+                        price = exact
             hits.append({
                 "leaflet": slug,
                 "page": page_no,
